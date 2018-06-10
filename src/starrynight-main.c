@@ -150,6 +150,23 @@ int main(int argc, char *argv[])
     }
 
     // Allocate lattice on the heap; which is made up of 'dipole' structs
+    /** MO: R = dipoles per unit cell
+    
+    lattice = (struct dipole ****)malloc(sizeof(struct dipole ***)*X);
+    for (x=0;x<X;x++) 
+    {
+        lattice[x]=(struct dipole ***)malloc(sizeof(struct dipole **)*Y);
+        for (y=0;y<Y;y++)
+        {
+            lattice[x][y]=(struct dipole **)malloc(sizeof(struct dipole *)*Z);
+            for (z=0; z<Z; ++z)
+            {
+                lattice[x][y][z]=(struct dipole *)malloc(sizeof(struct dipole)*R);
+            }
+        }
+    }    
+    
+    */
     fprintf(stderr,"Memory allocation for lattice with X=%d Y=%d Z=%d\n",X,Y,Z);
     lattice = (struct dipole ***)malloc(sizeof(struct dipole **)*X);
     for (x=0;x<X;x++) 
@@ -159,7 +176,14 @@ int main(int argc, char *argv[])
             lattice[x][y]=(struct dipole *)malloc(sizeof(struct dipole)*Z);
     } 
     fprintf(stderr,"Lattice allocated");
-
+    
+    /* MO: Positions of dipoles in unit cell.
+    cell_positions=(float **)malloc(sizeof(float *)*R);
+    for (i = 0; i < R; ++i)
+    {
+        cell_positions[i]=(float *)malloc(sizeof(float)*3);
+    }
+    */
     // LOGFILE -- If we're going to do some actual science, we better have one...
     sprintf(name,"Recombination_T_%04d.log",T);
     FILE *log;

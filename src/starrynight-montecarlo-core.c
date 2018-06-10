@@ -25,7 +25,10 @@ static int rand_int(int SPAN) // TODO: profile this to make sure it runs at an O
 // speedy evaluation of energy; results in a speedup as it avoids the for loops
 // + 'ifs' during Monte Carlo; instead you just pull the deltas from the lookup
 // table
-
+// MO: Change so that each dipole in unit cell has its own neighbour list.
+// dx, dy, dz are displacements in (potentially unequal) unit cell dimension
+// lengths. Must include uc_dip_idx to index dipole in neighbouring unit cell
+// (8 proton-displacive dipoles in croconic acid).
 enum {MAXNEIGHBOURS=10000};
 struct {
     int dx;
@@ -94,6 +97,7 @@ static double site_energy(int x, int y, int z, struct dipole *newdipole, struct 
         dx=neighbours[i].dx; dy=neighbours[i].dy; dz=neighbours[i].dz;
         d=neighbours[i].d;
 
+        // MO: Picks out neighbouring dipole with dx,dy,dz of neighbours[i].
         testdipole=& lattice[(X+x+dx)%X][(Y+y+dy)%Y][(Z+z+dz)%Z];
 
         n.x=(float)dx/d; n.y=(float)dy/d; n.z=(float)dz/d; //normalised diff. vector
@@ -148,6 +152,7 @@ static void MC_moves(int moves)
         MC_move();
 }
 
+// MO: Extend this function to proton-displacive dipoles.
 static void MC_move()
 {
     int x, y, z;
